@@ -1,11 +1,14 @@
 # Read Me First
+
 The following was discovered as part of building this project:
 
-* The original package name 'org.project.microservices.microservices-project' is invalid and this project uses 'org.project.microservices.start' instead.
+* The original package name 'org.project.microservices.microservices-project' is invalid and this project uses '
+  org.project.microservices.start' instead.
 
 # Getting Started
 
 ### Reference Documentation
+
 For further reference, please consider the following sections:
 
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
@@ -16,6 +19,7 @@ For further reference, please consider the following sections:
 * [Spring Web](https://docs.spring.io/spring-boot/docs/3.0.2/reference/htmlsingle/#web)
 
 ### Guides
+
 The following guides illustrate how to use some features concretely:
 
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)

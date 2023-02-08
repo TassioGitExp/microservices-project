@@ -24,7 +24,7 @@ public class CurrencyController {
     @GetMapping(value = "/{amount}/{from}/{to}")
     public Currency getCurrency(@PathVariable BigDecimal amount,
                                 @PathVariable String from,
-                                @PathVariable String to){
+                                @PathVariable String to) {
         var port = environment.getProperty("local.server.port");
 
         var currency = currencyRepository.findByFromAndTo(from, to);
