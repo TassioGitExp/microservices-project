@@ -8,4 +8,5 @@ internet resources.
 #### This API contains:
 
 - Spring boot framework
+- Microservices architecture
 - MongoDB Database

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: book-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: books-db
+  jackson:
+    default-property-inclusion: NON_NULL
+    serialization:
+      fail-on-empty-beans: false
+
+
+server:
+  port: 8110

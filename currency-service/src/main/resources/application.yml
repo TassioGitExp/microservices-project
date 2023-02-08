@@ -1,0 +1,11 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: currency-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: currency-db
+
