@@ -10,4 +10,5 @@ internet resources.
 - Spring boot framework
 - Microservices architecture
 - MongoDB Database
-- Netflix Eureka Server
+- Spring Cloud Netflix Eureka Server
+- Spring Cloud Gateway
