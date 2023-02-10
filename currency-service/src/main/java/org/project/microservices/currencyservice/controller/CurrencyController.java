@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 @RestController
 @RequestMapping("currency-service")
@@ -20,6 +21,11 @@ public class CurrencyController {
     private CurrencyRepository currencyRepository;
     @Autowired
     private Environment environment;
+
+    @GetMapping(value = "/find-all")
+    public List<Currency> getAllCurrencies(){
+        return currencyRepository.findAll();
+    }
 
     @GetMapping(value = "/{amount}/{from}/{to}")
     public Currency getCurrency(@PathVariable BigDecimal amount,
