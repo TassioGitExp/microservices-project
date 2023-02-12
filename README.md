@@ -11,4 +11,5 @@ internet resources.
 - Microservices architecture
 - MongoDB Database
 - Spring Cloud Netflix Eureka Server
-- Spring Cloud Gateway
+- Spring Cloud Gateway 
+- Distributed tracing with Zipkin and Micrometer

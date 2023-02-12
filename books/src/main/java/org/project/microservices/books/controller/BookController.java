@@ -1,5 +1,7 @@
 package org.project.microservices.books.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.project.microservices.books.model.Book;
 import org.project.microservices.books.model.repository.BookRepository;
 import org.project.microservices.books.proxy.CurrencyProxy;
@@ -10,6 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+@Tag(name = "Books Service Documentation")
 @RestController
 @RequestMapping("book-service")
 public class BookController {
@@ -23,6 +28,22 @@ public class BookController {
     @Autowired
     private CurrencyProxy proxy;
 
+    @GetMapping(value = "/find-all")
+    public List<Book> findAllBooks(){
+        String currency = "USD";
+        var port = environment.getProperty("local.server.port");
+
+        var bookList = bookRepository.findAll();
+
+        for (Book book: bookList) {
+            book.setCurrency(currency);
+            book.setEnvironment(port);
+        }
+
+        return bookList;
+    }
+
+    @Operation(description = "Converts the price of a book to another currency.")
     @GetMapping(value = "/{id}/{currency}")
     public Book findBookById(@PathVariable("id") String id,
                              @PathVariable("currency") String currency) {
