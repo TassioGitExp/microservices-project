@@ -13,3 +13,5 @@ internet resources.
 - Spring Cloud Netflix Eureka Server
 - Spring Cloud Gateway 
 - Distributed tracing with Zipkin and Micrometer
+- RabbitMQ
+- Docker support

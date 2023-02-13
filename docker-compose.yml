@@ -1,0 +1,132 @@
+version: '3.4'
+
+services:
+  zipkin-server:
+    image: openzipkin/zipkin:latest
+    restart: always
+    ports:
+      - "9411:9411"
+    depends_on:
+      - rabbit-mq
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+    networks:
+      - microservices-net
+
+  rabbit-mq:
+    image: rabbitmq:3.11.8-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservices-net
+
+  mongo-books-db:
+    image: mongo:6.0.4
+    restart: always
+    ports:
+      - "27020:27017"
+    expose:
+      - "27020"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+      MONGO_INITDB_DATABASE: books-db
+    networks:
+      - microservices-net
+
+  mongo-currency-db:
+    image: mongo:6.0.4
+    restart: always
+    ports:
+      - "27022:27017"
+    expose:
+      - "27022"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+      MONGO_INITDB_DATABASE: currency-db
+    networks:
+      - microservices-net
+
+  discovery-server:
+    image: tassiotodocker/discovery-server:0.0.1-SNAPSHOT
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-net
+    depends_on:
+      - rabbit-mq
+
+  gateway-service:
+    image: tassiotodocker/gateway-service:0.0.1-SNAPSHOT
+    ports:
+      - "8765:8765"
+    depends_on:
+      - discovery-server
+      - rabbit-mq
+    environment:
+      SPRING.ZIPKIN.BASE-URL: http://zipkin-server:9411/
+      EUREKA.CLIENT.SERVICEURL.DEFAULT-ZONE: http://discovery-server:8761/eureka
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBITMQ_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+    networks:
+      - microservices-net
+
+  book-service:
+    image: tassiotodocker/book-service
+    restart: always
+    build:
+      context: .
+      dockerfile: ./books/Dockerfile
+    environment:
+      TZ: America/Fortaleza
+      SPRING.ZIPKIN.BASE-URL: http://zipkin-server:9411/
+      EUREKA.CLIENT.SERVICEURL.DEFAULT-ZONE: http://discovery-server:8761/eureka
+      SPRING.DATA.MONGODB.URI: mongodb://mongo-books-db:27020
+      SPRING.DATA.MONGODB.USER: mongoadmin
+      SPRING.DATA.MONGODB.PASSWORD: mongoadmin
+      SPRING.DATA.MONGODB.DATABASE: books-db
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBITMQ_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+    depends_on:
+      - discovery-server
+      - mongo-books-db
+      - rabbit-mq
+    ports:
+      - "8110:8110"
+    networks:
+      - microservices-net
+
+  currency-service:
+    image: tassiotodocker/currency-service
+    restart: always
+    build:
+      context: .
+      dockerfile: ./currency-service/Dockerfile
+    environment:
+      TZ: America/Fortaleza
+      SPRING.ZIPKIN.BASE-URL: http://zipkin-server:9411/
+      EUREKA.CLIENT.SERVICEURL.DEFAULT-ZONE: http://discovery-server:8761/eureka
+      SPRING.DATA.MONGODB.URI: mongodb://mongo-currency-db:27022
+      SPRING.DATA.MONGODB.USER: mongoadmin
+      SPRING.DATA.MONGODB.PASSWORD: mongoadmin
+      SPRING.DATA.MONGODB.DATABASE: currency-db
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBITMQ_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+    depends_on:
+      - discovery-server
+      - mongo-currency-db
+      - rabbit-mq
+    ports:
+      - "8000:8000"
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge
